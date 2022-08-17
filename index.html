@@ -21,7 +21,26 @@
           <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
         </form>
         <h2>Training Paces</h2>
-        <div>Critical Speed: <span id="CSmin">--</span> - <span id="CSmax">--</span>/km</div>
+        <table>
+          <tr>
+            <th>Domain</th>
+            <th>Pace/km</th>
+            <th>Pace/400m</th>
+            <th>Pace/mile</th>
+          </tr>
+          <tr>
+            <td>Recovery</td>
+            <td id="trainingPace_R">--</td>
+            <td id="trainingPace400_R">--</td>
+            <td id="trainingPaceMile_R">--</td>
+          </tr>
+          <tr>
+            <td>Critical Speed</td>
+            <td id="trainingPace_CS"><span id="CSmin">--</span> - <span id="CSmax"></span></td>
+            <td id="trainingPace400_CS">--</td>
+            <td id="trainingPaceMile_CS">--</td>
+          </tr>
+        </table>
         <h2>Race Predictor</h2>
         <table>
           <tr>
@@ -109,6 +128,7 @@
             <td id="racePaceMile_Custom">--</td>
           </tr>
         </table>
+        <br>
         <div>
           An explanation of how these paces are calculated, as well as the source code can <a href="https://github.com/clivegross/running-calculator">be found here</a>. 
         </div>
