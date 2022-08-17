@@ -11,13 +11,14 @@
   <body>
     <main>
         <h1>Running Calculator</h1>
+<div>Enter a recent race result:</div>
         <form>
           <label for="distance">Distance (km)</label><br>
-          <input type="text" id="distance" name="distance"><br>
+          <input type="text" id="distance" name="distance" size="5"><br>
           <label for="timeHH">Time (hh:mm:ss)</label><br>
-          <input type="text" id="timeHH" name="timeHH">
-          :<input type="text" id="timeMM" name="timeMM">
-          :<input type="text" id="timeSS" name="timeSS"><br>
+          <input type="text" id="timeHH" name="timeHH" size="3">
+          :<input type="text" id="timeMM" name="timeMM" size="3">
+          :<input type="text" id="timeSS" name="timeSS" size="3"><br>
           <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
         </form>
         <h2>Training Paces</h2>
