@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Running Calculator</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  </head>
+  <body>
+    <main>
+        <h1>Running Calculator</h1>
+        <form>
+          <label for="distance">Distance (km)</label><br>
+          <input type="text" id="distance" name="distance"><br>
+          <label for="timeHH">Time (hh:mm:ss)</label><br>
+          <input type="text" id="timeHH" name="timeHH">
+          :<input type="text" id="timeMM" name="timeMM">
+          :<input type="text" id="timeSS" name="timeSS"><br>
+          <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
+        </form>
+        <h2>Training Paces</h2>
+        <div>Critical Speed: <span id="CSmin">--</span> - <span id="CSmax">--</span>/km</div>
+        <h2>Race Predictor</h2>
+        <table>
+          <tr>
+            <th>Distance</th>
+            <th>Time</th>
+            <th>Pace/km</th>
+            <th>Pace/400m</th>
+            <th>Pace/mile</th>
+          </tr>
+          <tr>
+            <td>800m</td>
+            <td id="raceTime_800">--</td>
+            <td id="racePace_800">--</td>
+            <td id="racePace400_800">--</td>
+            <td id="racePaceMile_800">--</td>
+          </tr>
+          <tr>
+            <td>1000m</td>
+            <td id="raceTime_1000">--</td>
+            <td id="racePace_1000">--</td>
+            <td id="racePace400_1000">--</td>
+            <td id="racePaceMile_1000">--</td>
+          </tr>
+          <tr>
+            <td>1500m</td>
+            <td id="raceTime_1500">--</td>
+            <td id="racePace_1500">--</td>
+            <td id="racePace400_1500">--</td>
+            <td id="racePaceMile_1500">--</td>
+          </tr>
+          <tr>
+            <td>1 Mile</td>
+            <td id="raceTime_Mile">--</td>
+            <td id="racePace_Mile">--</td>
+            <td id="racePace400_Mile">--</td>
+            <td id="racePaceMile_Mile">--</td>
+          </tr>          
+          <tr>
+            <td>3km</td>
+            <td id="raceTime_3K">--</td>
+            <td id="racePace_3K">--</td>
+            <td id="racePace400_3K">--</td>
+            <td id="racePaceMile_3K">--</td>
+          </tr>       
+          <tr>
+            <td>5km</td>
+            <td id="raceTime_5K">--</td>
+            <td id="racePace_5K">--</td>
+            <td id="racePace400_5K">--</td>
+            <td id="racePaceMile_5K">--</td>
+          </tr>
+          <tr>
+            <td>10km</td>
+            <td id="raceTime_10K">--</td>
+            <td id="racePace_10K">--</td>
+            <td id="racePace400_10K">--</td>
+            <td id="racePaceMile_10K">--</td>
+          </tr>
+          <tr>
+            <td>Half Marathon</td>
+            <td id="raceTime_HM">--</td>
+            <td id="racePace_HM">--</td>
+            <td id="racePace400_HM">--</td>
+            <td id="racePaceMile_HM">--</td>
+          </tr>
+          <tr>
+            <td>30km</td>
+            <td id="raceTime_30K">--</td>
+            <td id="racePace_30K">--</td>
+            <td id="racePace400_30K">--</td>
+            <td id="racePaceMile_30K">--</td>
+          </tr>
+          <tr>
+            <td>Marathon</td>
+            <td id="raceTime_M">--</td>
+            <td id="racePace_M">--</td>
+            <td id="racePace400_M">--</td>
+            <td id="racePaceMile_M">--</td>
+          </tr>
+          <tr>
+            <td>Custom Distance</td>
+            <td id="raceTime_Custom">--</td>
+            <td id="racePace_Custom">--</td>
+            <td id="racePace400_Custom">--</td>
+            <td id="racePaceMile_Custom">--</td>
+          </tr>
+        </table>
+        <div>
+          An explanation of how these paces are calculated, as well as the source code can <a href="https://github.com/clivegross/running-calculator">be found here</a>. 
+        </div>
+    </main>
+	<script src="calculator.js"></script>
+  </body>
+</html>
