@@ -1,5 +1,7 @@
 # running-calculator
 
+[Click here for Demo.](https://clivegross.github.io/running-calculator/)
+
 A simple client-side running calculator that estimates training paces and predicts race times based on a recent race result.
 
 The calculator is written in javascript so no server required.
