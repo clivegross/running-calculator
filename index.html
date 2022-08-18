@@ -24,59 +24,64 @@
         <h2>Training Paces</h2>
         <table>
           <tr>
-            <th>Domain</th>
+            <th></th>
             <th>Pace/km</th>
             <th>Pace/400m</th>
             <th>Pace/mile</th>
+            <th>Speed m/s</th>
           </tr>
           <tr>
-            <td>Recovery</td>
+            <td><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5070974/">Critical Speed</a></td>
+            <td id="trainingPace_CS"><span id="CSPaceMin">--</span> - <span id="CSPaceMax"></span></td>
+            <td id="trainingPace400_CS"><span id="CS400Min">--</span> - <span id="CS400Max"></span></td>
+            <td id="trainingPaceMile_CS"><span id="CSMileMin">--</span> - <span id="CSMileMax"></span></td>
+            <td id="trainingSpeed_CS"><span id="CSMax">--</span> - <span id="CSMin"></span></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>Zone</th>
+            <th>Pace/km</th>
+            <th>Pace/400m</th>
+            <th>Pace/mile</th>
+            <th>Speed m/s</th>
+          </tr>
+          <tr>
+            <td>1 Recovery</td>
             <td id="trainingPace_R">--</td>
             <td id="trainingPace400_R">--</td>
             <td id="trainingPaceMile_R">--</td>
           </tr>
           <tr>
-            <td>Endurance</td>
+            <td>2 Endurance</td>
             <td id="trainingPace_E">--</td>
             <td id="trainingPace400_E">--</td>
             <td id="trainingPaceMile_E">--</td>
           </tr>
-
           <tr>
-            <td>Tempo</td>
+            <td>3 Tempo</td>
             <td id="trainingPace_Tempo">--</td>
             <td id="trainingPace400_Tempo">--</td>
             <td id="trainingPaceMile_Tempo">--</td>
           </tr>
-
           <tr>
-            <td>Threshold</td>
+            <td>4 Threshold</td>
             <td id="trainingPace_Th">--</td>
             <td id="trainingPace400_Th">--</td>
             <td id="trainingPaceMile_Th">--</td>
           </tr>
-
           <tr>
-            <td>Critical Speed</td>
-            <td id="trainingPace_CS"><span id="CSmin">--</span> - <span id="CSmax"></span></td>
-            <td id="trainingPace400_CS">--</td>
-            <td id="trainingPaceMile_CS">--</td>
-          </tr>
-
-          <tr>
-            <td>VO2Max</td>
+            <td>5 VO2Max</td>
             <td id="trainingPace_VO2">--</td>
             <td id="trainingPace400_VO2">--</td>
             <td id="trainingPaceMile_VO2">--</td>
           </tr>
-
           <tr>
-            <td>Anaerobic Capacity</td>
+            <td>6 Anaerobic Capacity</td>
             <td id="trainingPace_AnC">--</td>
             <td id="trainingPace400_AnC">--</td>
             <td id="trainingPaceMile_AnC">--</td>
           </tr>
-
         </table>
         <h2>Race Predictor</h2>
         <table>
@@ -86,6 +91,7 @@
             <th>Pace/km</th>
             <th>Pace/400m</th>
             <th>Pace/mile</th>
+            <th>Speed m/s</th>
           </tr>
           <tr>
             <td>800m</td>
@@ -158,7 +164,10 @@
             <td id="racePaceMile_M">--</td>
           </tr>
           <tr>
-            <td>Custom Distance</td>
+            <td>Custom Distance<br>
+              <input type="text" id="customDistance" name="customDistance" size="5">km<br>
+              <input type="button" id="calcCustomButton" onClick="calculate()" value="Calculate">
+            </td>
             <td id="raceTime_Custom">--</td>
             <td id="racePace_Custom">--</td>
             <td id="racePace400_Custom">--</td>
@@ -167,7 +176,7 @@
         </table>
         <br>
         <div>
-          An explanation of how these paces are calculated, as well as the source code can <a href="https://github.com/clivegross/running-calculator">be found here</a>. 
+          These calculations are estimates only based on a single race result. An explanation of how these paces and race times are calculated, as well as the source code can <a href="https://github.com/clivegross/running-calculator">be found here</a>. 
         </div>
     </main>
 	<script src="calculator.js"></script>
