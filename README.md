@@ -2,7 +2,7 @@
 
 [Click here for Demo.](https://clivegross.github.io/running-calculator/)
 
-A simple client-side running calculator that estimates training paces and predicts race times based on a recent race result.
+A simple client-side running calculator that estimates training paces and predicts race times based on a recent race result. There is a track calculator for working out splits on a 400m track as well.
 
 The calculator is written in javascript so no server required.
 

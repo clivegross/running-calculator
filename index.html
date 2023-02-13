@@ -5,23 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Running Calculator</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="styles/style.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
   </head>
   <body>
     <main>
-        <h1>Running Calculator</h1>
-<div>Enter a recent race result:</div>
-        <form>
-          <label for="distance">Distance (km)</label><br>
-          <input type="text" id="distance" name="distance" size="5"><br>
-          <label for="timeHH">Time (hh:mm:ss)</label><br>
-          <input type="text" id="timeHH" name="timeHH" size="3">
-          :<input type="text" id="timeMM" name="timeMM" size="3">
-          :<input type="text" id="timeSS" name="timeSS" size="3"><br>
-          <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
-        </form>
-        <h2>Training Paces</h2>
+      <h1>Running Calculator</h1>
+      <!-- Tab links -->
+      <div class="tab">
+        <button class="tablinks active" onclick="openTab(event, 'Race Predictor')">Race Predictor</button>
+        <button class="tablinks" onclick="openTab(event, 'Track Calculator')">Track Calculator</button>
+      </div>
+      <!-- Tab content -->
+      <div id="Race Predictor" class="tabcontent" style="display:block;">
+        <div>Enter a recent race result:</div>
+          <form>
+            <label for="distance">Distance (km)</label><br>
+            <input type="text" id="distance" name="distance" size="5"><br>
+            <label for="timeHH">Time (hh:mm:ss)</label><br>
+            <input type="text" id="timeHH" name="timeHH" size="3">
+            :<input type="text" id="timeMM" name="timeMM" size="3">
+            :<input type="text" id="timeSS" name="timeSS" size="3"><br>
+            <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
+          </form>
+          <h2>Training Paces</h2>
         <table>
           <tr>
             <th></th>
@@ -196,7 +203,138 @@
         <div>
           These calculations are estimates only based on a single race result. An explanation of how these paces and race times are calculated, as well as the source code can <a href="https://github.com/clivegross/running-calculator">be found here</a>. 
         </div>
+      </div>
+
+      <div id="Track Calculator" class="tabcontent" id="defaultOpen">
+        <div>Enter a target split:</div>
+        <form>
+          <label for="trackDistance">Distance (m)</label><br>
+          <input type="text" id="trackDistance" name="trackDistance" size="5" value="400"><br>
+          <label for="timeMM">Time (mm:ss)</label><br>
+          <input type="text" id="trackTimeMM" name="trackTimeMM" size="3">
+          :<input type="text" id="trackTimeSS" name="trackTimeSS" size="3"><br>
+          <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
+        </form>
+        <h2>Track Splits</h2>
+        <table>
+          <tr>
+            <th>400m Split</th>
+            <th>
+              <label for="cars">Select a lane:</label>
+              <select name="laneSelect" id="laneSelect">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>                
+              </select>
+            </th>
+            <th>Pace/km</th>
+            <th>Pace/mile</th>
+            <th>Speed m/s</th>
+          </tr>
+          <tr>
+            <td id="track_-3_400">--</td>
+            <td id="track_-3_lane">--</td>
+            <td id="track_-3_1000">--</td>
+            <td id="track_-3_mile">--</td>
+            <td id="track_-3_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_-2.5_400">--</td>
+            <td id="track_-2.5_lane">--</td>
+            <td id="track_-2.5_1000">--</td>
+            <td id="track_-2.5_mile">--</td>
+            <td id="track_-2.5_speed">--</td>
+          </tr>          
+          <tr>
+            <td id="track_-2_400">--</td>
+            <td id="track_-2_lane">--</td>
+            <td id="track_-2_1000">--</td>
+            <td id="track_-2_mile">--</td>
+            <td id="track_-2_speed">--</td>
+          </tr>          
+          <tr>
+            <td id="track_-1.5_400">--</td>
+            <td id="track_-1.5_lane">--</td>
+            <td id="track_-1.5_1000">--</td>
+            <td id="track_-1.5_mile">--</td>
+            <td id="track_-1.5_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_-1_400">--</td>
+            <td id="track_-1_lane">--</td>
+            <td id="track_-1_1000">--</td>
+            <td id="track_-1_mile">--</td>
+            <td id="track_-1_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_-0.5_400">--</td>
+            <td id="track_-0.5_lane">--</td>
+            <td id="track_-0.5_1000">--</td>
+            <td id="track_-0.5_mile">--</td>
+            <td id="track_-0.5_speed">--</td>
+          </tr>          
+          <tr>
+            <td><b id="track_0_400">--</b></td>
+            <td><b id="track_0_lane">--</td>
+            <td><b id="track_0_1000">--</b></td>
+            <td><b id="track_0_mile">--</b></td>
+            <td><b id="track_0_speed">--</b></td>
+          </tr>
+          <tr>
+            <td id="track_0.5_400">--</td>
+            <td id="track_0.5_lane">--</td>
+            <td id="track_0.5_1000">--</td>
+            <td id="track_0.5_mile">--</td>
+            <td id="track_0.5_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_1_400">--</td>
+            <td id="track_1_lane">--</td>
+            <td id="track_1_1000">--</td>
+            <td id="track_1_mile">--</td>
+            <td id="track_1_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_1.5_400">--</td>
+            <td id="track_1.5_lane">--</td>
+            <td id="track_1.5_1000">--</td>
+            <td id="track_1.5_mile">--</td>
+            <td id="track_1.5_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_2_400">--</td>
+            <td id="track_2_lane">--</td>
+            <td id="track_2_1000">--</td>
+            <td id="track_2_mile">--</td>
+            <td id="track_2_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_2.5_400">--</td>
+            <td id="track_2.5_lane">--</td>
+            <td id="track_2.5_1000">--</td>
+            <td id="track_2.5_mile">--</td>
+            <td id="track_2.5_speed">--</td>
+          </tr>
+          <tr>
+            <td id="track_3_400">--</td>
+            <td id="track_3_lane">--</td>
+            <td id="track_3_1000">--</td>
+            <td id="track_3_mile">--</td>
+            <td id="track_3_speed">--</td>
+          </tr>            
+        </table>
+        <br>
+        <div>
+          These calculations are based on a IAAF 400m Standard Track with a constant lane width of 1.22m. This equates to an additional 7.67m length per lane.
+        </div>
+      </div>
     </main>
-	<script src="calculator.js"></script>
+    <script src="scripts/calculator.js"></script>
+    <script src="scripts/tabs.js"></script>
   </body>
 </html>

@@ -120,6 +120,51 @@ function calculate()
   updateElementById("CSMileMax", criticalSpeed.paceMileMax);
   updateElementById("CSMin", criticalSpeed.speedMin.toFixed(1));
   updateElementById("CSMax", criticalSpeed.speedMax.toFixed(1));
+
+  //////////////////////////
+  // track calculator
+  // set distance and time from from input
+  var trackDistance = document.getElementById("trackDistance").value;
+  var trackTime = document.getElementById("trackTimeMM").value*60 + document.getElementById("trackTimeSS").value*1;
+  var trackLane = document.getElementById("laneSelect").value*1;
+
+  // training zones
+  let trackSplits = {};
+  let trackRows = ['-3', '-2.5', '-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2', '2.5', '3'];
+  trackRows.forEach(function (item, index) {
+    trackSplits[item] = new TrackSplit(trackDistance, trackTime, item*1.0, trackLane*1.0);
+  });
+  
+  // output
+  // update track splits table elements
+  trackRows.forEach(function (item, index) {
+    updateElementById('track_'+item+'_400', trackSplits[item].split400);
+    updateElementById('track_'+item+'_lane', trackSplits[item].splitLaneSelect);
+    updateElementById('track_'+item+'_1000', trackSplits[item].split1000);
+    updateElementById('track_'+item+'_mile', trackSplits[item].splitMile);
+    updateElementById('track_'+item+'_speed', trackSplits[item].speed.toFixed(1));
+  }); 
+
+}
+
+class TrackSplit {
+  constructor(trackDistance, trackTime, offset, lane) {
+    this.trackDistance = trackDistance; //m
+    this.trackTime = trackTime; //s
+    this.trackLane = lane; //s
+    this.laneOffset = 7.67; //m
+    // calc track splits
+    // console.log(offset*1.0)
+    this.split400InSeconds = trackTime/trackDistance*400 + offset*1.0; // s
+    this.splitLaneSelectInSeconds = this.split400InSeconds/400*(400 + (lane - 1)*this.laneOffset); // s
+    this.split1000InSeconds = this.split400InSeconds/400*1000; // s
+    this.splitMileInSeconds = this.split400InSeconds/400*1609; // s
+    this.split400 = convertNumToTime(this.split400InSeconds); // 'mm:ss'
+    this.splitLaneSelect = convertNumToTime(this.splitLaneSelectInSeconds); // 'mm:ss'
+    this.split1000 = convertNumToTime(this.split1000InSeconds); // 'mm:ss'
+    this.splitMile = convertNumToTime(this.splitMileInSeconds); // 'mm:ss'
+    this.speed = 1000 / this.split1000InSeconds; //(m/s)
+  }
 }
 
 function predictT2Riegel(D1, D2, T1) {
@@ -152,7 +197,7 @@ function predictV2Riegel(D1, T1, T2) {
 
 function convertNumToTime(number) {
   // 'number' represents duration in seconds
-  // returns string "hh:mm:ss" if number >= 1 hour or "mm:ss" if < 1 hour
+  // returns string "hh:mm:ss" if number >= 1 hour or "mm:ss" if < 1 hour or "mm:ss.ms" if <2min
 
   // Check sign of given number
   var sign = (number >= 0) ? 1 : -1;
@@ -164,6 +209,7 @@ function convertNumToTime(number) {
   var hour = Math.floor(number/3600);
   var minute = Math.floor(number/60) - hour*60;
   var second = Math.floor(number) - hour*3600 - minute*60;
+  var ms = (number - hour*3600 - minute*60 - second)*10;
 
   // Add padding if needed
   if (minute.toString().length < 2) {
@@ -178,8 +224,14 @@ function convertNumToTime(number) {
   sign = sign == 1 ? '' : '-';
 
   if (hour == 0) {
-    // Concatenate minutes and seconds 'mm:ss'
-    time = sign + minute + ':' + second;
+    // if 2min or longer
+    if (minute > 1) {
+      // Concatenate minutes and seconds 'mm:ss'
+      time = sign + minute + ':' + second;
+    } else {
+      // Concatenate minutes seconds and ms 'mm:ss.ms'
+      time = sign + minute + ':' + second + '.' + ms.toFixed(0);
+    }
   } else {
     // Concatenate hours, minutes and seconds 'hh:mm:ss'
     time = sign + hour + ':' + minute + ':' + second;
