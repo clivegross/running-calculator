@@ -43,6 +43,27 @@ function calculate()
     }
   }
 
+  class CriticalSpeed2Point {
+    constructor(distance1, time1, distance2, time2) {
+      this.distance1 = distance1; // km
+      this.time1 = time1; // s
+      this.distance2 = distance2; // km
+      this.time2 = time2; // s
+      const { cs, Dprime } = calculateCriticalSpeedAndDPrime(this.distance1, this.time1, this.distance2, this.time2);
+      console.log('cs:', cs, 'Dprime:', Dprime)
+      this.cs = cs; // m/s
+      this.Dprime = Dprime; // m
+      this.paceInSeconds = 1000 / this.cs; // s/km
+      this.pace = convertNumToTime(this.paceInSeconds); // 'mm:ss'/km
+      this.pace400InSeconds = this.paceInSeconds*0.4; // s/400m
+      this.pace400 = convertNumToTime(this.pace400InSeconds); // 'mm:ss'/400m
+      this.paceMileInSeconds = this.paceInSeconds*1.609; // s/mile
+      this.paceMile = convertNumToTime(this.paceMileInSeconds); // 'mm:ss'/mile
+      this.kph = this.cs*3.6; // km/h
+      this.DprimeMile = this.Dprime/1609; // miles
+    }
+  }
+
   class TrainingZone {
     constructor(zone, criticalSpeedMin, criticalSpeedMax) {
       this.zone = zone;
@@ -72,6 +93,7 @@ function calculate()
       this.speedMin = 1000 / this.paceMaxInSeconds; //(m/s)
       this.speedMax = 1000 / this.paceMinInSeconds; //(m/s)
     }
+
   }  
  
   // set distance and time from form input
@@ -143,8 +165,34 @@ function calculate()
     updateElementById('track_'+item+'_1000', trackSplits[item].split1000);
     updateElementById('track_'+item+'_mile', trackSplits[item].splitMile);
     updateElementById('track_'+item+'_speed', trackSplits[item].speed.toFixed(1));
-  }); 
+  });
 
+  /////////////////////////////////////
+  // critical speed 2 point calculator
+  // set distance and time from from input
+  var distance1 = document.getElementById("CSdistance1").value*1000; // convert from km to m
+  var time1 = document.getElementById("CStime1MM").value*60 + document.getElementById("CStime1SS").value*1;
+  var distance2 = document.getElementById("CSdistance2").value*1000; // convert from km to m
+  var time2 = document.getElementById("CStime2MM").value*60 + document.getElementById("CStime2SS").value*1;
+
+  // critical speed based on 2 results
+  var criticalSpeed2Point = new CriticalSpeed2Point(distance1, time1, distance2, time2);
+  console.log(criticalSpeed2Point);
+
+  updateElementById("CSPace", criticalSpeed2Point.pace);
+  updateElementById("CS400", criticalSpeed2Point.pace400);
+  updateElementById("CSMile", criticalSpeed2Point.paceMile);
+  updateElementById("CS", criticalSpeed2Point.cs.toFixed(1));
+  updateElementById("CSkph", criticalSpeed2Point.kph.toFixed(1));
+  updateElementById("Dprime", criticalSpeed2Point.Dprime.toFixed(0));
+
+  // Make sure to attach these values to the window object if needed elsewhere
+  // window.cs = cs;
+  // window.yIntercept = yIntercept;
+
+  // Call the plot function
+  plotSpeedDurationChart(criticalSpeed2Point.cs, criticalSpeed2Point.Dprime);
+  plotPaceDurationChart(criticalSpeed2Point.cs, criticalSpeed2Point.Dprime);
 }
 
 class TrackSplit {
@@ -358,4 +406,23 @@ function updateRacePredictionElements(racePredictions) {
       raceDistance = item.id.substring(item.id.search("_")+1);
       updateElementById(item.id, racePredictions[raceDistance].speed.toFixed(1));
     });
+}
+
+function calculateCriticalSpeedAndDPrime(distance1Meters, time1InSeconds, distance2Meters, time2InSeconds) {
+  // Calculate speeds (m/s)
+  const speed1 = distance1Meters / time1InSeconds;
+  const speed2 = distance2Meters / time2InSeconds;
+  console.log('speed1:', speed1, 'speed2:', speed2)
+
+  // Calculate Critical Speed (CS) and D'
+  // Calculate the slope of distance over time between the two points
+  const deltaDistance = distance2Meters - distance1Meters;
+  const deltaTime = time2InSeconds - time1InSeconds;
+  const cs = deltaDistance / deltaTime;
+  //const cs = (speed1 * speed2 * (time2InSeconds - time1InSeconds)) / (speed1 * time2InSeconds - speed2 * time1InSeconds);
+  // Calculate the y-intercept (b)
+  const Dprime = distance1Meters - cs * time1InSeconds;
+  //const Dprime = (speed1 - cs) * time1InSeconds;
+
+  return { cs, Dprime };
 }

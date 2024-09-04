@@ -7,6 +7,7 @@
     <title>Running Calculator</title>
     <link rel="stylesheet" href="styles/style.css">
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <main>
@@ -15,9 +16,11 @@
       <div class="tab">
         <button class="tablinks active" onclick="openTab(event, 'Race Predictor')">Race Predictor</button>
         <button class="tablinks" onclick="openTab(event, 'Track Calculator')">Track Calculator</button>
+        <button class="tablinks" onclick="openTab(event, 'Critical Speed')">Critical Speed</button>
       </div>
       <!-- Tab content -->
       <div id="Race Predictor" class="tabcontent" style="display:block;">
+
         <div>Enter a recent race result:</div>
           <form>
             <label for="distance">Distance (km)</label><br>
@@ -333,8 +336,94 @@
           These calculations are based on a IAAF 400m Standard Track with a constant lane width of 1.22m. This equates to an additional 7.67m length per lane.
         </div>
       </div>
+
+      <div id="Critical Speed" class="tabcontent" id="defaultOpen">
+          <form>
+            <label>Enter a recent short race or time trial result (800m - 1 mile)</label><br>
+            <label for="CSdistance1">Distance (km)</label><br>
+            <input type="text" id="CSdistance1" name="CSdistance1" size="5" value="1"><br>
+            <label for="CStimeHH1">Time (mm:ss)</label><br>
+            <input type="text" id="CStime1MM" name="CStime1MM" size="3" value="2">
+            :<input type="text" id="CStime1SS" name="CStime1SS" size="3" value="41"><br>
+            <label>Enter a recent long race or time trial result (5km - 10km)</label><br>
+            <label for="CSdistance1">Distance (km)</label><br>
+            <input type="text" id="CSdistance2" name="CSdistance2" size="5" value="5"><br>
+            <label for="CStimeHH2">Time (mm:ss)</label><br>
+            <input type="text" id="CStime2MM" name="CStime2MM" size="3" value="15">
+            :<input type="text" id="CStime2SS" name="CStime2SS" size="3" value="27"><br>
+            <input type="button" id="CScalcButton" onClick="calculate()" value="Calculate"><br>
+          </form>
+          <h2>Critical Speed</h2>
+        <table>
+          <tr>
+            <th></th>
+            <th>Pace/km</th>
+            <th>Pace/400m</th>
+            <th>Pace/mile</th>
+            <th>Speed m/s</th>
+            <th>Speed km/h</th>
+          </tr>
+          <tr>
+            <td><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5070974/">Critical Speed</a></td>
+            <td id="trainingPace_CS"><span id="CSPace">--</span></td>
+            <td id="trainingPace400_CS"><span id="CS400">--</span></td>
+            <td id="trainingPaceMile_CS"><span id="CSMile">--</span></td>
+            <td id="trainingSpeed_CS"><span id="CS">--</span></td>
+            <td id="trainingSpeed_CS"><span id="CSkph">--</span></td>
+          </tr>
+        </table>
+        <br>
+        <h2>D'</h2>
+        <table>
+          <tr>
+            <th>metres</th>
+          </tr>
+          <tr>
+            <td id="Dprime_Dprime"><span id="Dprime">--</span>m</td>
+          </tr>
+        </table>
+        <br>
+        <h2>Speed-Duration Curve</h2>
+        <div>
+          <input type="radio" id="paceChartRadio" name="chartType" value="pace" checked onclick="toggleChart()">
+          <label for="paceChartRadio">Pace (m/s)</label>
+          <input type="radio" id="speedChartRadio" name="chartType" value="speed" onclick="toggleChart()">
+          <label for="speedChartRadio">Speed (m/s)</label>
+        </div>
+        <div id="speedChartContainer">
+          <canvas id="speedDurationChart" width="400" height="200"></canvas>
+        </div>
+        <div id="paceChartContainer" style="display:none;">
+          <canvas id="paceDurationChart"></canvas>
+        </div>
+      </div>
+
     </main>
     <script src="scripts/calculator.js"></script>
+    <script src="scripts/plot.js"></script>
     <script src="scripts/tabs.js"></script>
+    <script>
+      function toggleChart() {
+        const speedChartContainer = document.getElementById('speedChartContainer');
+        const paceChartContainer = document.getElementById('paceChartContainer');
+        const paceChartRadio = document.getElementById('paceChartRadio');
+        if (paceChartRadio.checked) {
+          speedChartContainer.style.display = 'none';
+          paceChartContainer.style.display = 'block';
+        } else {
+          speedChartContainer.style.display = 'block';
+          paceChartContainer.style.display = 'none';
+        }
+      }
+
+      function toggleRacePredictor() {
+      
+    }
+
+      // Ensure the correct chart is displayed on page load
+      document.addEventListener('DOMContentLoaded', (event) => {
+        toggleChart();
+      });
+    </script>
   </body>
 </html>

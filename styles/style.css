@@ -48,3 +48,12 @@ tr:nth-child(even) {background-color: #f2f2f2;}
   border: 1px solid #ccc;
   border-top: none;
 } 
+
+#paceChartContainer {
+  display: none;
+}
+
+#paceDurationChart {
+  width: 100%;
+  height: 50vh; /* 50% of the viewport height */
+}
