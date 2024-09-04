@@ -1,5 +1,8 @@
 // plot.js
 
+let speedDurationChartInstance = null;
+let paceDurationChartInstance = null;
+
 function speedToPace(speed) {
   const paceInSeconds = 1000 / speed; // seconds per kilometer
   const minutes = Math.floor(paceInSeconds / 60);
@@ -32,7 +35,13 @@ function plotSpeedDurationChart(cs, yIntercept) {
     }
   
     const ctx = document.getElementById('speedDurationChart').getContext('2d');
-    const speedDurationChart = new Chart(ctx, {
+
+    // Destroy the existing chart instance if it exists
+    if (speedDurationChartInstance !== null) {
+      speedDurationChartInstance.destroy();
+    }
+
+    speedDurationChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
         labels: durations,
@@ -49,7 +58,6 @@ function plotSpeedDurationChart(cs, yIntercept) {
             data: Array(durations.length).fill(cs),
             borderColor: '#cc0000',
             borderWidth: 2,
-            borderDash: [10, 5],
             fill: false
           }
         ]
@@ -99,7 +107,13 @@ function plotSpeedDurationChart(cs, yIntercept) {
     }
   
     const ctx = document.getElementById('paceDurationChart').getContext('2d');
-    const paceDurationChart = new Chart(ctx, {
+
+     // Destroy the existing chart instance if it exists
+     if (paceDurationChartInstance !== null) {
+      paceDurationChartInstance.destroy();
+    }
+
+    paceDurationChartInstance = new Chart(ctx, {
       type: 'line',
       data: {
         labels: durations,
@@ -117,7 +131,6 @@ function plotSpeedDurationChart(cs, yIntercept) {
             data: Array(durations.length).fill(1000 / (cs)),
             borderColor: '#cc0000',
             borderWidth: 2,
-            borderDash: [10, 5],
             fill: false
           }
         ]

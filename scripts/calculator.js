@@ -4,14 +4,34 @@ function calculate()
   // I feel like there is a much smarter way to refactor the code in these 3 classes
   // but life is short and I am busy.
 
+  // class RacePrediction {
+  //   constructor(raceDistance) {
+  //     this.distance = raceDistance;
+  //     this.timeInSeconds = predictT2Riegel(distance, this.distance, time); // (s)
+  //     this.paceInSeconds = this.timeInSeconds / this.distance; //(s/km)
+  //     this.pace400InSeconds = this.paceInSeconds*0.4; //(s/400m)
+  //     this.paceMileInSeconds = this.paceInSeconds*1.609; //(s/mile)
+  //     this.speed = this.distance*1000 / this.timeInSeconds; //(m/s)
+  //     this.time = convertNumToTime(this.timeInSeconds); // 'hh:mm:ss'
+  //     this.pace = convertNumToTime(this.paceInSeconds); // 'mm:ss'/km
+  //     this.pace400 = convertNumToTime(this.pace400InSeconds); // 'mm:ss'/400m
+  //     this.paceMile = convertNumToTime(this.paceMileInSeconds); // 'mm:ss'/mile
+  //   }
+  // }
+
   class RacePrediction {
-    constructor(raceDistance) {
-      this.distance = raceDistance;
-      this.timeInSeconds = predictT2Riegel(distance, this.distance, time); // (s)
-      this.paceInSeconds = this.timeInSeconds / this.distance; //(s/km)
-      this.pace400InSeconds = this.paceInSeconds*0.4; //(s/400m)
-      this.paceMileInSeconds = this.paceInSeconds*1.609; //(s/mile)
-      this.speed = this.distance*1000 / this.timeInSeconds; //(m/s)
+    // uses Riegel's formula to predict time for a race distance
+    constructor(resultDistanceInKm, resultTimeInSeconds, raceDistanceInKm) {
+      this.resultDistance = resultDistanceInKm;
+      this.resultTimeInSeconds = resultTimeInSeconds;
+      this.distance = raceDistanceInKm;
+  
+      // Predict time for the race distance using Riegel's formula
+      this.timeInSeconds = predictT2Riegel(this.resultDistance, this.distance, this.resultTimeInSeconds); // (s)
+      this.paceInSeconds = this.timeInSeconds / this.distance; // (s/km)
+      this.pace400InSeconds = this.paceInSeconds * 0.4; // (s/400m)
+      this.paceMileInSeconds = this.paceInSeconds * 1.609; // (s/mile)
+      this.speed = this.distance * 1000 / this.timeInSeconds; // (m/s)
       this.time = convertNumToTime(this.timeInSeconds); // 'hh:mm:ss'
       this.pace = convertNumToTime(this.paceInSeconds); // 'mm:ss'/km
       this.pace400 = convertNumToTime(this.pace400InSeconds); // 'mm:ss'/400m
@@ -19,15 +39,45 @@ function calculate()
     }
   }
 
+  class RacePredictionUsingCriticalSpeed {
+    // uses Critical Speed to predict time for a race distance
+    constructor(criticalSpeed, raceDistanceInKm) {
+      this.criticalSpeed = criticalSpeed.cs;
+      this.Dprime = criticalSpeed.Dprime;
+      this.distance = raceDistanceInKm;
+      
+      // speed = CS + D' / time
+      // time = (distance - D') / CS
+      this.timeInSeconds = (this.distance*1000 - this.Dprime) / this.criticalSpeed; // (s)
+      // the speed duration curve is only valid for short-medium durations (eg < 30-40min)
+      // so if the predicted time is longer than 40min, use Riegel's formula instead
+      if (this.timeInSeconds > 30*60) {
+        // use critical speed to estimate distance over 20min then use Riegel's formula to predict time using these values
+        const distance20minInKm = (this.criticalSpeed * 20*60 + this.Dprime) / 1000; // (km)
+        this.timeInSeconds = predictT2Riegel(distance20minInKm, this.distance, 20*60); // (s)
+      }
+      this.paceInSeconds = this.timeInSeconds / this.distance; // (s/km)
+      this.pace400InSeconds = this.paceInSeconds * 0.4; // (s/400m)
+      this.paceMileInSeconds = this.paceInSeconds * 1.609; // (s/mile)
+      this.speed = this.distance * 1000 / this.timeInSeconds; // (m/s)
+      this.time = convertNumToTime(this.timeInSeconds); // 'hh:mm:ss'
+      this.pace = convertNumToTime(this.paceInSeconds); // 'mm:ss'/km
+      this.pace400 = convertNumToTime(this.pace400InSeconds); // 'mm:ss'/400m
+      this.paceMile = convertNumToTime(this.paceMileInSeconds); // 'mm:ss'/mile
+    }
+  }
+
+
+
   class CriticalSpeed {
-    constructor(raceDistance, raceTime) {
-      this.raceDistance = raceDistance; //km
-      this.raceTime = raceTime; //s
+    constructor(resultDistanceInKm, resultTimeInSeconds) {
+      this.raceDistance = resultDistanceInKm; //km
+      this.raceTime = resultTimeInSeconds; //s
       // critical speed based on race duration
       this.csTmin = 30*60; // s
       this.csTmax = 40*60; // s
-      this.paceMinInSeconds = predictV2Riegel(distance, time, this.csTmin); // s/km
-      this.paceMaxInSeconds = predictV2Riegel(distance, time, this.csTmax); // s/km
+      this.paceMinInSeconds = predictV2Riegel(this.raceDistance, this.raceTime, this.csTmin); // s/km
+      this.paceMaxInSeconds = predictV2Riegel(this.raceDistance, this.raceTime, this.csTmax); // s/km
       this.paceMin400InSeconds = this.paceMinInSeconds*0.4; //(s/400m)
       this.paceMax400InSeconds = this.paceMaxInSeconds*0.4; //(s/400m)
       this.paceMinMileInSeconds = this.paceMinInSeconds*1.609; //(s/mile)
@@ -50,7 +100,6 @@ function calculate()
       this.distance2 = distance2; // km
       this.time2 = time2; // s
       const { cs, Dprime } = calculateCriticalSpeedAndDPrime(this.distance1, this.time1, this.distance2, this.time2);
-      console.log('cs:', cs, 'Dprime:', Dprime)
       this.cs = cs; // m/s
       this.Dprime = Dprime; // m
       this.paceInSeconds = 1000 / this.cs; // s/km
@@ -61,6 +110,22 @@ function calculate()
       this.paceMile = convertNumToTime(this.paceMileInSeconds); // 'mm:ss'/mile
       this.kph = this.cs*3.6; // km/h
       this.DprimeMile = this.Dprime/1609; // miles
+      this.paceVariabilityRange = 2; // s/km +/- this nominal value from the calculated pace
+      // critical speed ranges for display
+      this.paceMinInSeconds = this.paceInSeconds - 2; // s/km
+      this.paceMaxInSeconds = this.paceInSeconds + 2; // s/km
+      this.paceMin400InSeconds = this.paceMinInSeconds*0.4; //(s/400m)
+      this.paceMax400InSeconds = this.paceMaxInSeconds*0.4; //(s/400m)
+      this.paceMinMileInSeconds = this.paceMinInSeconds*1.609; //(s/mile)
+      this.paceMaxMileInSeconds = this.paceMaxInSeconds*1.609; //(s/mile)
+      this.speedMin = 1000 / this.paceMinInSeconds; //(m/s)
+      this.speedMax = 1000 / this.paceMaxInSeconds; //(m/s)
+      this.paceMin = convertNumToTime(this.paceMinInSeconds); // 'mm:ss'/km
+      this.paceMax = convertNumToTime(this.paceMaxInSeconds); // 'mm:ss'/km
+      this.pace400Min = convertNumToTime(this.paceMin400InSeconds); // 'mm:ss'/km
+      this.pace400Max = convertNumToTime(this.paceMax400InSeconds); // 'mm:ss'/km
+      this.paceMileMin = convertNumToTime(this.paceMinMileInSeconds); // 'mm:ss'/km
+      this.paceMileMax = convertNumToTime(this.paceMaxMileInSeconds); // 'mm:ss'/km
     }
   }
 
@@ -97,13 +162,31 @@ function calculate()
   }  
  
   // set distance and time from form input
-  var distance = document.getElementById("distance").value;
-  var time = document.getElementById("timeHH").value*60*60 + document.getElementById("timeMM").value*60 + document.getElementById("timeSS").value*1;
+  var resultDistanceInKm = document.getElementById("distance").value;
+  var resultTimeInSeconds = document.getElementById("timeHH").value*60*60 + document.getElementById("timeMM").value*60 + document.getElementById("timeSS").value*1;
   var customRaceDistance = document.getElementById("customDistance").value;
   
-  
-  // critical speed based on race duration
-  var criticalSpeed = new CriticalSpeed(distance, time);
+  /////////////////////////////////////
+  // critical speed estaimted based on race duration
+  var criticalSpeedRaceResult = new CriticalSpeed(resultDistanceInKm, resultTimeInSeconds);
+
+    /////////////////////////////////////
+  // critical speed 2 point calculator
+  // set distance and time from from input
+  var distance1 = document.getElementById("CSdistance1").value*1000; // convert from km to m
+  var time1 = document.getElementById("CStime1MM").value*60 + document.getElementById("CStime1SS").value*1;
+  var distance2 = document.getElementById("CSdistance2").value*1000; // convert from km to m
+  var time2 = document.getElementById("CStime2MM").value*60 + document.getElementById("CStime2SS").value*1;
+
+  // critical speed based on 2 results
+  var criticalSpeed2Point = new CriticalSpeed2Point(distance1, time1, distance2, time2);
+
+  /////////////////////////////////////
+  // select Critical Speed between criticalSpeedRaceResult and criticalSpeed2Point based on criticalSpeedRadio.checked
+  // where:
+  const criticalSpeedRadio = document.getElementById('criticalSpeedRadio');
+  var useCriticalSpeed = criticalSpeedRadio.checked ? true : false;
+  var criticalSpeed = useCriticalSpeed ? criticalSpeed2Point : criticalSpeedRaceResult;
 
   // training zones
   let trainingZones = {};
@@ -116,18 +199,33 @@ function calculate()
 
   // race predictions
   let racePredictions = {};
-  racePredictions['M'] = new RacePrediction(42.2);
-  racePredictions['30K'] = new RacePrediction(30);
-  racePredictions['HM'] = new RacePrediction(21.1);
-  racePredictions['10K'] = new RacePrediction(10);
-  racePredictions['5K'] = new RacePrediction(5);
-  racePredictions['3K'] = new RacePrediction(3);
-  racePredictions['Mile'] = new RacePrediction(1.609);
-  racePredictions['1500'] = new RacePrediction(1.5);
-  racePredictions['1000'] = new RacePrediction(1);
-  racePredictions['800'] = new RacePrediction(0.8);
-  racePredictions['Custom'] = new RacePrediction(customRaceDistance);
- 
+  if (useCriticalSpeed) {
+    racePredictions['M'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 42.2);
+    racePredictions['30K'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 30);
+    racePredictions['HM'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 21.1);
+    racePredictions['10K'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 10);
+    racePredictions['5K'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 5);
+    racePredictions['3K'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 3);
+    racePredictions['Mile'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 1.609);
+    racePredictions['1500'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 1.5);
+    racePredictions['1000'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 1);
+    racePredictions['800'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, 0.8);
+    racePredictions['Custom'] = new RacePredictionUsingCriticalSpeed(criticalSpeed, customRaceDistance);
+  }
+  else {
+    racePredictions['M'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 42.2);
+    racePredictions['30K'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 30);
+    racePredictions['HM'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 21.1);
+    racePredictions['10K'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 10);
+    racePredictions['5K'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 5);
+    racePredictions['3K'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 3);
+    racePredictions['Mile'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 1.609);
+    racePredictions['1500'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 1.5);
+    racePredictions['1000'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 1);
+    racePredictions['800'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, 0.8);
+    racePredictions['Custom'] = new RacePrediction(resultDistanceInKm, resultTimeInSeconds, customRaceDistance);
+  }
+    
   // output
   // update training pace element for each training zone
   updateTrainingZoneElements(trainingZones);
@@ -177,7 +275,6 @@ function calculate()
 
   // critical speed based on 2 results
   var criticalSpeed2Point = new CriticalSpeed2Point(distance1, time1, distance2, time2);
-  console.log(criticalSpeed2Point);
 
   updateElementById("CSPace", criticalSpeed2Point.pace);
   updateElementById("CS400", criticalSpeed2Point.pace400);
@@ -412,7 +509,6 @@ function calculateCriticalSpeedAndDPrime(distance1Meters, time1InSeconds, distan
   // Calculate speeds (m/s)
   const speed1 = distance1Meters / time1InSeconds;
   const speed2 = distance2Meters / time2InSeconds;
-  console.log('speed1:', speed1, 'speed2:', speed2)
 
   // Calculate Critical Speed (CS) and D'
   // Calculate the slope of distance over time between the two points

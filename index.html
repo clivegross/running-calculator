@@ -21,17 +21,25 @@
       <!-- Tab content -->
       <div id="Race Predictor" class="tabcontent" style="display:block;">
 
-        <div>Enter a recent race result:</div>
-          <form>
-            <label for="distance">Distance (km)</label><br>
-            <input type="text" id="distance" name="distance" size="5"><br>
-            <label for="timeHH">Time (hh:mm:ss)</label><br>
-            <input type="text" id="timeHH" name="timeHH" size="3">
-            :<input type="text" id="timeMM" name="timeMM" size="3">
-            :<input type="text" id="timeSS" name="timeSS" size="3"><br>
-            <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
-          </form>
-          <h2>Training Paces</h2>
+        <div>
+          <input type="radio" id="criticalSpeedRadio" name="predictorType" value="criticalSpeed" onclick="toggleRacePredictor()">
+          <label for="criticalSpeedRadio">Use Critical Speed (calculate from Critical Speed tab)</label><br>
+          <input type="radio" id="raceResultRadio" name="predictorType" value="raceResult" checked onclick="toggleRacePredictor()">
+          <label for="raceResultRadio">Use race result</label>
+        </div>
+
+        <div id="raceResultContainer">Enter a recent race result:</div>
+        <form id="raceResultForm">
+          <label for="distance">Distance (km)</label><br>
+          <input type="text" id="distance" name="distance" size="5"><br>
+          <label for="timeHH">Time (hh:mm:ss)</label><br>
+          <input type="text" id="timeHH" name="timeHH" size="3">
+          :<input type="text" id="timeMM" name="timeMM" size="3">
+          :<input type="text" id="timeSS" name="timeSS" size="3"><br>
+          <input type="button" id="calcButton" onClick="calculate()" value="Calculate">
+        </form>
+
+        <h2>Training Paces</h2>
         <table>
           <tr>
             <th></th>
@@ -417,8 +425,18 @@
       }
 
       function toggleRacePredictor() {
-      
-    }
+        const form = document.getElementById('raceResultForm');
+        const container = document.getElementById('raceResultContainer');
+        const criticalSpeedRadio = document.getElementById('criticalSpeedRadio');
+        
+        if (criticalSpeedRadio.checked) {
+          form.style.display = 'none';
+          container.style.display = 'none';
+        } else {
+          form.style.display = 'block';
+          container.style.display = 'block';
+        }
+      }
 
       // Ensure the correct chart is displayed on page load
       document.addEventListener('DOMContentLoaded', (event) => {
