@@ -92,6 +92,10 @@ function plotSpeedDurationChart(cs, yIntercept) {
               ).toFixed(2)} km`;
             },
           },
+          filter: function (context) {
+            // Check the label of the dataset. If it is 'Critical Speed', do not show the tooltip for this dataset.
+            return !context.dataset.label.includes("Critical Speed");
+          },
         },
       },
     },
@@ -180,7 +184,7 @@ function plotPaceDurationChart(cs, yIntercept) {
           },
           filter: function (context) {
             // Check the label of the dataset. If it is 'Critical Speed', do not show the tooltip for this dataset.
-            return context.dataset.label !== "Critical Speed";
+            return !context.dataset.label.includes("Critical Speed");
           },
         },
       },
